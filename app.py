@@ -6,6 +6,7 @@ from openpyxl.styles import Font
 import io
 import re
 import math
+import requests
 
 st.set_page_config(page_title="Excel Property Mark-Up Tool", layout="centered")
 
@@ -35,13 +36,11 @@ management_companies = [
 
 def app():
     st.title("📊 Excel Property Mark-Up Tool")
-    import requests
-from io import BytesIO
 
-url = "https://github.com/two3four/Excel-Property-Mark-Up/raw/main/Calculator.xlsx"
-response = requests.get(url)
-uploaded_file = BytesIO(response.content)
-
+    # Download Excel file directly from GitHub
+    url = "https://github.com/two3four/Excel-Property-Mark-Up/raw/main/Calculator.xlsx"
+    response = requests.get(url)
+    uploaded_file = io.BytesIO(response.content)
 
     if uploaded_file:
         wb = load_workbook(uploaded_file)
