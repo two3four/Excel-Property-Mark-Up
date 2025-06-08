@@ -35,7 +35,13 @@ management_companies = [
 
 def app():
     st.title("📊 Excel Property Mark-Up Tool")
-    uploaded_file = st.file_uploader("Upload your Calculator.xlsx file", type=["xlsx"])
+    import requests
+from io import BytesIO
+
+url = "https://github.com/two3four/Excel-Property-Mark-Up/raw/main/Calculator.xlsx"
+response = requests.get(url)
+uploaded_file = BytesIO(response.content)
+
 
     if uploaded_file:
         wb = load_workbook(uploaded_file)
