@@ -112,21 +112,20 @@ def app():
         if selected_company != "None":
             ws["B16"] = 1
 
-        # BULK DISCOUNT LOGIC - R19 → F26:F51
+        # BULK DISCOUNT LOGIC - R19 (merged R19:S20) → F27:F54
         r19_val = ws["R19"].value
         if isinstance(r19_val, (int, float)):
-            for row in range(26, 52):  # D26 to D51
+            for row in range(27, 55):  # D27 to D54 (actual data rows)
                 cell_val = ws[f"D{row}"].value
                 if cell_val:
-                    text = str(cell_val).replace(",", "")
+                    text = str(cell_val).replace(",", "").strip()
                     if "to" in text:
                         parts = text.split("to")
-                        low, high = int(parts[0].strip()), int(parts[1].strip())
+                        low, high = int(parts[0]), int(parts[1])
                     elif "and up" in text or "+" in text:
                         low, high = int(text.split()[0]), float("inf")
                     else:
                         continue
-
                     if low <= r19_val <= high:
                         ws[f"F{row}"] = 1
                         break
