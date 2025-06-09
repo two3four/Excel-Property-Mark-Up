@@ -37,7 +37,6 @@ management_companies = [
 def app():
     st.title("📊 Excel Property Mark-Up Tool")
 
-    # Download Excel file directly from GitHub
     url = "https://github.com/two3four/Excel-Property-Mark-Up/raw/main/Calculator.xlsx"
     response = requests.get(url)
     uploaded_file = io.BytesIO(response.content)
@@ -112,6 +111,25 @@ def app():
         selected_company = st.selectbox("Select a Company", ["None"] + management_companies)
         if selected_company != "None":
             ws["B16"] = 1
+
+        # BULK DISCOUNT LOGIC - R19 → F26:F51
+        r19_val = ws["R19"].value
+        if isinstance(r19_val, (int, float)):
+            for row in range(26, 52):  # D26 to D51
+                cell_val = ws[f"D{row}"].value
+                if cell_val:
+                    text = str(cell_val).replace(",", "")
+                    if "to" in text:
+                        parts = text.split("to")
+                        low, high = int(parts[0].strip()), int(parts[1].strip())
+                    elif "and up" in text or "+" in text:
+                        low, high = int(text.split()[0]), float("inf")
+                    else:
+                        continue
+
+                    if low <= r19_val <= high:
+                        ws[f"F{row}"] = 1
+                        break
 
         output = io.BytesIO()
         wb.save(output)
